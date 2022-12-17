@@ -27,29 +27,29 @@ import (
 // by the function and test if it an instance of kafka.WriteErrors in order to
 // identify which messages have succeeded or failed, for example:
 //
-//	// Construct a synchronous writer (the default mode).
-//	w := &kafka.Writer{
-//		Addr:         kafka.TCP("localhost:9092"),
-//		Topic:        "topic-A",
-//		RequiredAcks: kafka.RequireAll,
-//	}
-//
-//	...
-//
-//  // Passing a context can prevent the operation from blocking indefinitely.
-//	switch err := w.WriteMessages(ctx, msgs...).(type) {
-//	case nil:
-//	case kafka.WriteErrors:
-//		for i := range msgs {
-//			if err[i] != nil {
-//				// handle the error writing msgs[i]
-//				...
-//			}
+//		// Construct a synchronous writer (the default mode).
+//		w := &kafka.Writer{
+//			Addr:         kafka.TCP("localhost:9092"),
+//			Topic:        "topic-A",
+//			RequiredAcks: kafka.RequireAll,
 //		}
-//	default:
-//		// handle other errors
+//
 //		...
-//	}
+//
+//	 // Passing a context can prevent the operation from blocking indefinitely.
+//		switch err := w.WriteMessages(ctx, msgs...).(type) {
+//		case nil:
+//		case kafka.WriteErrors:
+//			for i := range msgs {
+//				if err[i] != nil {
+//					// handle the error writing msgs[i]
+//					...
+//				}
+//			}
+//		default:
+//			// handle other errors
+//			...
+//		}
 //
 // In asynchronous mode, the program may configure a completion handler on the
 // writer to receive notifications of messages being written to kafka:
@@ -1015,7 +1015,7 @@ func (b *writeBatch) add(msg Message, maxSize int, maxBytes int64) bool {
 	}
 
 	if cap(b.msgs) == 0 {
-		b.msgs = make([]Message, 0, maxSize)
+		b.msgs = make([]Message, 0)
 	}
 
 	b.msgs = append(b.msgs, msg)
